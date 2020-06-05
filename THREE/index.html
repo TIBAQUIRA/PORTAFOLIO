@@ -1,0 +1,227 @@
+<html>
+	<head>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+//SET UP SCENE & CAMERA
+var scene;
+var camera;
+
+//SET UP SHAPES & MATERIAL
+var geometry;
+var material;
+var mesh;
+/* 
+  add geomerty and material to mesh.
+  mesh(geomerty, matrial)
+*/
+
+//RENDER THE SCENE
+var renderer;
+
+init();
+animate();
+
+function init() {
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000); /* 10000 the vanishing point(how far you can see) */
+
+  //x,y,z. increase the camera height on the y axis
+  camera.position.set(0, 2, 0);
+
+  //looks in the center of the scene since that where we always start when creating a scene. 0,0,0
+  camera.lookAt(scene.position);
+
+  //set size to full screen
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  //add to the DOM
+  document.body.appendChild(renderer.domElement);
+ //tall middle cube
+  var geometry = new THREE.BoxGeometry(0.8,7.3,0.4);
+  var material = new THREE.MeshBasicMaterial( { color: 0xeb33ff } );
+  var cube10 = new THREE.Mesh( geometry, material );
+  scene.add( cube10 );
+
+cube10.position.y=3.65;
+cube10.position.z=0;
+cube10.position.x=0;
+
+  //middle cube
+  var geometry = new THREE.BoxGeometry(1,7,0.6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube = new THREE.Mesh( geometry, material );
+  scene.add( cube );
+
+cube.position.y=3.5;
+cube.position.z=0;
+cube.position.x=0;
+
+  //side right cube
+  var geometry = new THREE.BoxGeometry(0.3,6.5,0.8);
+  var material = new THREE.MeshBasicMaterial( { color: 0xeb33ff } );
+  var cube1 = new THREE.Mesh( geometry, material );
+  scene.add( cube1 );
+
+cube1.position.y=3.25;
+cube1.position.z=0;
+cube1.position.x=0.5;
+
+  //side left cube
+  var geometry = new THREE.BoxGeometry(0.3,6.5,0.8);
+  var material = new THREE.MeshBasicMaterial( { color: 0xeb33ff } );
+  var cube2 = new THREE.Mesh( geometry, material );
+  scene.add( cube2 );
+
+cube2.position.y=3.25;
+cube2.position.z=0;
+cube2.position.x=-0.5;
+
+  //side medium left cube
+  var geometry = new THREE.BoxGeometry(0.4,5.8,1);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube3 = new THREE.Mesh( geometry, material );
+  scene.add( cube3 );
+
+cube3.position.y=2.9;
+cube3.position.z=0;
+cube3.position.x=0.5;
+
+ //side medium right cube
+  var geometry = new THREE.BoxGeometry(0.4,5.8,1);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube4 = new THREE.Mesh( geometry, material );
+  scene.add( cube4 );
+
+cube4.position.y=2.9;
+cube4.position.z=0;
+cube4.position.x=-0.5;
+
+ //side small right cube
+  var geometry = new THREE.BoxGeometry(0.7,2,1.2);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube5 = new THREE.Mesh( geometry, material );
+  scene.add( cube5 );
+
+cube5.position.y=1;
+cube5.position.z=0;
+cube5.position.x=0.6;
+
+ //side small left cube
+  var geometry = new THREE.BoxGeometry(0.7,2,1.2);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9} );
+  var cube6 = new THREE.Mesh( geometry, material );
+  scene.add( cube6 );
+
+cube6.position.y=1;
+cube6.position.z=0;
+cube6.position.x=-0.6;
+
+ //small middle cube
+  var geometry = new THREE.BoxGeometry(1,2.5,0.99);
+  var material = new THREE.MeshBasicMaterial( { color: 0xeb33ff} );
+  var cube7 = new THREE.Mesh( geometry, material );
+  scene.add( cube7 );
+
+cube7.position.y=1.25;
+cube7.position.z=0;
+cube7.position.x=-0;
+
+ //small middle cube2
+  var geometry = new THREE.BoxGeometry(2.5,1.5,0.90);
+  var material = new THREE.MeshBasicMaterial( { color: 0xeb33ff} );
+  var cube8 = new THREE.Mesh( geometry, material );
+  scene.add( cube8 );
+
+cube8.position.y=0.75;
+cube8.position.z=0;
+cube8.position.x=-0;
+
+ //smallest middle cube
+  var geometry = new THREE.BoxGeometry(3.5,0.5,2);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe} );
+  var cube9 = new THREE.Mesh( geometry, material );
+  scene.add( cube9 );
+
+cube9.position.y=0.25;
+cube9.position.z=0;
+cube9.position.x=-0;
+
+ //cono
+var geometry = new THREE.ConeGeometry( 0.2, 3 );
+var material = new THREE.MeshBasicMaterial( {color: 0x9b3cbe} );
+var cone = new THREE.Mesh( geometry, material );
+scene.add( cone );
+
+cone.position.y=7.3;
+cone.position.z=0;
+cone.position.x=0;
+
+
+
+  //increase the steps to make squares bigger. must be divisible by the size
+  var size = 20,
+    steps = 1;
+
+  geometry = new THREE.Geometry();
+  material = new THREE.LineBasicMaterial({
+    color: 'teal'
+  });
+
+  for (var i = -size; i <= size; i += steps) {
+    //draw lines one way
+    geometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+    geometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+
+    //draw lines the other way
+    geometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+    geometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+  }
+
+  //THREE.LinePieces prevents connecting of vertices
+  var line = new THREE.LineSegments(geometry, material, THREE.LinePieces);
+
+  scene.add(line);
+
+  //always render the scene
+  render();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
+
+//resize viewport
+window.addEventListener('resize', function(){
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	renderer.setSize( width, height);
+
+	camera.aspect = width / height; 
+	camera.updateProjectionMatrix();
+});
+
+function render() {
+  //using timer as animation
+  var speed = Date.now() * 0.00025;
+  camera.position.x = Math.cos(speed) * 20;
+  camera.position.y=12;
+  camera.position.z = Math.sin(speed) * 20;
+
+  camera.lookAt(0,3,0); //0,0,0
+  renderer.render(scene, camera);
+}
+
+			
+		</script>
+	</body>
+</html>

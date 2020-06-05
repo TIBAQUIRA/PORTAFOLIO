@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PARCIAL</title>
+		<style>
+      			html, body { margin: 0; padding: 0; overflow: hidden; }
+		</style>
+	</head>
+	<body>
+	    	<script src="js/three.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/csg.js"></script>
+		<script src="js/THREE.CSG.js"></script>
+    		<script>
+			var scene, aspect, camera, renderer, controls;
+			var ambientLight,Light,spotLight;
+			var startTime = Date.now();	
+			//MOVE
+			var upArrow = false;
+			var downArrow = false;
+			var rightArrow = false;
+			var leftArrow = false;
+			init();
+			//INITIALIZE
+			function init(){
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0x666666);
+			aspect = window.innerWidth / window.innerHeight;
+			camera = new THREE.PerspectiveCamera(75,aspect,0.1,1000);
+
+			renderer = new THREE.WebGLRenderer();
+	        	renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.shadowMap.enabled = true;
+			renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+			document.body.appendChild( renderer.domElement );
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+			//MOVEMENT
+ 			var onKeyDown = function ( event ) {
+			switch ( event.keyCode ) {
+			case 87: // TRASLADAR ADELANTE
+            		upArrow = true;
+            		break;
+			case 65: // CAMARA X
+			leftArrow = true;
+			break;
+			case 83: // CAMARA Y
+			downArrow = true;
+			break;
+                   	case 68: // CAMARA Z
+			rightArrow = true;
+			break;
+			}
+			};
+			var onKeyUp = function ( event ) {
+			switch ( event.keyCode ) {
+			case 87: // TRASLADAR ADELANTE
+            		upArrow = false;
+            		break;
+			case 65: // CAMARA X
+			leftArrow = false;
+			break;
+			case 83: // CAMARA Y
+			downArrow  = false;
+			break;
+                   	case 68: // CAMARA Z
+			rightArrow = false;
+			break;
+			}
+			};
+			document.addEventListener( 'keydown', onKeyDown, false );
+			document.addEventListener( 'keyup', onKeyUp, false );	
+
+
+			
+			//PERSONAJE
+    			var geometry = new THREE.BoxGeometry(0.5,3,0.5);
+  			var material = new THREE.MeshStandardMaterial( { color: 0x3b3935 } );
+  			car = new THREE.Mesh( geometry, material );
+			car.position.set(0,5,0);
+			car.recieveShadow =true;
+			car.castShadow =true;
+
+			//LIGHT
+			ambientLight = new THREE.AmbientLight(0xffffff,0.2);
+			scene.add(ambientLight);	
+			
+			light = new THREE.SpotLight(0xffffff,1,25,Math.PI/12,0,2);
+			light.position.set(7,5.5,0);
+			light.castShadow = true;
+			light.shadow.mapSize.width = 1024;
+			light.shadow.mapSize.height = 1024;
+			light.shadow.camera.near=0.1;
+			light.shadow.camera.far=25;
+			light.target = car;
+			scene.add(light);
+
+			light1 = new THREE.SpotLight(0xffffff,1,25,Math.PI/12,0,2);
+			light1.position.set(-7,5.5,0);
+			light1.castShadow = true;
+			light1.shadow.mapSize.width = 1024;
+			light1.shadow.mapSize.height = 1024;
+			light1.shadow.camera.near=0.1;
+			light1.shadow.camera.far=25;
+			light1.target = car;
+			scene.add(light1);
+			
+			light2 = new THREE.SpotLight(0xffffff,1,25,Math.PI/12,0,2);
+			light2.position.set(0,5.5,7);
+			light2.castShadow = true;
+			light2.shadow.mapSize.width = 1024;
+			light2.shadow.mapSize.height = 1024;
+			light2.shadow.camera.near=0.1;
+			light2.shadow.camera.far=25;
+			light2.target = car;
+			scene.add(light2);
+			
+			light3 = new THREE.SpotLight(0xffffff,1,25,Math.PI/12,0,2);
+			light3.position.set(0,5.5,-7);
+			light3.castShadow = true;
+			light3.shadow.mapSize.width = 1024;
+			light3.shadow.mapSize.height = 1024;
+			light3.shadow.camera.near=0.1;
+			light3.shadow.camera.far=25;
+			light3.target = car;
+			scene.add(light3);
+
+			light4 = new THREE.PointLight(0xffffff,1,20,2);
+			light4.position.set(0,5,0);
+			light4.castShadow = true;
+			light4.shadow.camera.near=0.1;
+			light4.shadow.camera.far=25;
+			scene.add(light4);
+			
+			
+
+			//GRID AND GUIDES
+           		var size = 50;
+           		var arrowSize = 1;
+         		var divisions = size;
+            		var origin = new THREE.Vector3(0, 0, 0);
+            		var x = new THREE.Vector3(1, 0, 0);
+            		var y = new THREE.Vector3(0, 1, 0);
+            		var z = new THREE.Vector3(0, 0, 1);
+            		var color1 = new THREE.Color(0xFFFFFF);
+            		var color2 = new THREE.Color(0x333333);
+            		var colorR = new THREE.Color(0xAA3333);
+            		var colorG = new THREE.Color(0x33AA33);
+            		var colorB = new THREE.Color(0x333366);
+
+            		//GRID
+            		var axesHelper = new THREE.AxesHelper(size);
+            		var gridHelperXY = new THREE.GridHelper(size, divisions, color1, color1);
+            		var gridHelperXZ = new THREE.GridHelper(size, divisions, color1, color1);
+            		var gridHelperYZ = new THREE.GridHelper(size, divisions, color1, color1);
+
+            		//GRID ROTATION
+            		gridHelperXY.rotateOnWorldAxis(x, THREE.Math.degToRad(90));
+            		gridHelperXZ.rotateOnWorldAxis(y, THREE.Math.degToRad(90));
+            		gridHelperYZ.rotateOnWorldAxis(z, THREE.Math.degToRad(90));
+
+            		//COOR ARROWS
+            		var arrowX = new THREE.ArrowHelper(x, origin, arrowSize, colorR);
+            		var arrowY = new THREE.ArrowHelper(y, origin, arrowSize, colorG);
+            		var arrowZ = new THREE.ArrowHelper(z, origin, arrowSize, colorB);
+			
+			//CAMERA SETTINGS
+			camera.position.x = 10;
+	    		camera.position.y = 5;
+            		camera.position.z = 0;
+			
+	    		camera.lookAt(0,0,0);
+
+	    		//GRID ADD
+            		/*scene.add( gridHelperXY );
+            		scene.add( gridHelperXZ );
+            		scene.add( gridHelperYZ );
+            		scene.add( arrowX );
+            		scene.add( arrowY );
+            		scene.add( arrowZ );*/
+
+			//MATERIALS
+			red = new THREE.MeshBasicMaterial({color:0xff0000});
+			green = new THREE.MeshBasicMaterial({color:0x00ff00});
+			blue = new THREE.MeshBasicMaterial({color:0x0000ff});
+			gray = new THREE.MeshStandardMaterial({color:0xffffff,metalness:0.5});
+			darkgray = new THREE.MeshStandardMaterial({color:0xffffff,metalness:0.7});
+			white = new THREE.MeshPhongMaterial({color:0xced0d9});
+    			white2 = new THREE.MeshStandardMaterial({color:0xbdbfb0,roughness:0.5});
+			wine = new THREE.MeshStandardMaterial({color:0x9e2f28,roughness:0.8});
+			black = new THREE.MeshPhongMaterial({color:0x615441});
+			orange = new THREE.MeshStandardMaterial({color:0x997a06,roughness:0.8});
+			
+			//GEOMETRIES
+			var cylinder = new THREE.CylinderGeometry(4.99,4.99,0.5,100,1);
+			var cylinder1 = new THREE.CylinderGeometry(5,5,0.8,100,1);
+			var cylinder2 =  new THREE.CylinderGeometry(4.75,4.75,0.8,100,1);
+			var cylinder3 = new THREE.CylinderGeometry(15,15,0.05,100,1);
+			var cylinder4 = new THREE.CylinderGeometry(7,7,0.49,100,1);
+			var cylinder5 = new THREE.CylinderGeometry(6.9,6.9,0.49,100,1);
+			var cylinder6 = new THREE.CylinderGeometry(5.5,5.5,0.1,100,1);
+			var cylinder7 = new THREE.CylinderGeometry(6.5,6.5,0.1,100,1);
+			var cylinder8 = new THREE.CylinderGeometry(7,7,0.5,100,1);
+			var cylinder9 = new THREE.CylinderGeometry(7.2,7.2,0.5,100,1);
+			var cylinder10 = new THREE.CylinderGeometry(8.5,8.5,0.5,100,1);
+			var cylinder11 = new THREE.CylinderGeometry(9,9,0.5,100,1);
+			var cylinder12 = new THREE.CylinderGeometry(9,9,0.75,100,1);
+			var cylinder13 = new THREE.CylinderGeometry(9.5,9.5,0.75,100,1);
+			var cylinder14 = new THREE.CylinderGeometry(9.5,9.5,1,100,1);
+			var cylinder15 = new THREE.CylinderGeometry(10,10,1,100,1);
+			var cylinder16 = new THREE.CylinderGeometry(10,10,1.25,100,1);
+			var cylinder17 = new THREE.CylinderGeometry(10.5,10.5,1.25,100,1);
+			var cylinder18 = new THREE.CylinderGeometry(10.5,10.5,1.5,100,1);
+			var cylinder19 = new THREE.CylinderGeometry(11,11,1.5,100,1);
+			var cylinder20 = new THREE.CylinderGeometry(6,6,3,3,1);
+			var cylinder21 = new THREE.CylinderGeometry(5,5,3,3,1);
+			var cylinder22 = new THREE.CylinderGeometry(0.1,0.1,6,3,1);
+			var cylinder25 = new THREE.CylinderGeometry(0.1,0.3,0.3,16,1);
+
+			var cylinder23 = new THREE.CylinderGeometry(0.08,0.05,1.8,32);
+			var cylinder24 = new THREE.CylinderGeometry(0.05,0.05,1.5,32);
+			var cylinder26 = new THREE.CylinderGeometry(8.5,8.5,0.105,100,1);
+			var cylinder27 = new THREE.CylinderGeometry(11,11,0.105,100,1);
+
+			var cube = new THREE.BoxGeometry(2,2,3);
+			var cube1 = new THREE.BoxGeometry(10,0.5,3);
+			var cube2 = new THREE.BoxGeometry(0.2,0.2,0.1);
+			var cube3 = new THREE.BoxGeometry(0.2,0.1,0.2);
+
+			var torus = new THREE.TorusGeometry(8,0.1,16,100);
+			var torus1 = new THREE.TorusGeometry(7.5,0.1,16,100);
+
+			//MESHES
+			var stage = new THREE.Mesh(cylinder,wine);
+			var stage1 = new THREE.Mesh(cylinder1,white);
+			var stage2 = new THREE.Mesh(cylinder2, white);
+			var stage3 = new THREE.Mesh(cube, white);
+			var stage4 = new THREE.Mesh(cube1, wine);
+
+			var fence = new THREE.Mesh(cylinder4,gray);
+			var fence1 = new THREE.Mesh(cylinder5,gray);
+
+			var carpet = new THREE.Mesh(cylinder7,wine);
+			var carpet1 = new THREE.Mesh(cylinder6,wine);
+			var carpet2 = new THREE.Mesh(cylinder27,wine);
+			var carpet3 = new THREE.Mesh(cylinder26,wine);
+
+			var steps = new THREE.Mesh(cylinder10,black);
+			var steps1 = new THREE.Mesh(cylinder11,black);
+			var steps2 = new THREE.Mesh(cylinder12,black);
+			var steps3 = new THREE.Mesh(cylinder13,black);
+			var steps4 = new THREE.Mesh(cylinder14,black);
+			var steps5 = new THREE.Mesh(cylinder15,black);
+			var steps6 = new THREE.Mesh(cylinder16,black);
+			var steps7 = new THREE.Mesh(cylinder17,black);
+			var steps8 = new THREE.Mesh(cylinder18,black);
+			var steps9 = new THREE.Mesh(cylinder19,black);
+
+			var division = new THREE.Mesh(cylinder20,green);
+			var division1 = new THREE.Mesh(cylinder21,green);
+			var division2 = new THREE.Mesh(cylinder21,green);
+			var division3 = new THREE.Mesh(cylinder21,green);
+
+			var lpole = new THREE.Mesh(cylinder22,gray);
+			var lpole1 = new THREE.Mesh(cylinder22,gray);
+			var lpole2= new THREE.Mesh(cylinder22,gray);
+			var lpole3 = new THREE.Mesh(cylinder22,gray);
+			var lpole4 = new THREE.Mesh(cylinder22,gray);
+			var lpole5 = new THREE.Mesh(cylinder22,gray);
+			var lpole6 = new THREE.Mesh(cylinder22,gray);
+			var lpole7 = new THREE.Mesh(cylinder22,gray);
+
+			var lstand = new THREE.Mesh(torus,gray);
+			var lstand1 = new THREE.Mesh(torus1,gray);
+
+			floor = new THREE.Mesh(cylinder3,white2);
+
+			lamp = new THREE.Mesh(cylinder25,darkgray);
+			lamp1 = new THREE.Mesh(cylinder25,darkgray);
+			lamp2= new THREE.Mesh(cylinder25,darkgray);
+			lamp3 = new THREE.Mesh(cylinder25,darkgray);
+
+			//MESH CICLES
+			var j = 1,i = 0;
+			var pole = new THREE.CylinderGeometry(0.05, 0.05, 1, 32 );
+        		while(i!=6){
+          			var spole = new THREE.Mesh(pole,gray);
+				spole.castShadow = true;
+				spole.receiveShadow = true;
+          			spole.position.set(-5.5,i,-5.5);
+          			spole.rotation.x= Math.PI/6;
+          			scene.add (spole);
+          			i= i+1;
+            		while (j!=6){
+              			var spole1 = new THREE.Mesh(pole,gray);
+				spole1.castShadow = true;
+				spole1.receiveShadow = true;
+              			spole1.position.set(-5.5,j,-5.5);
+              			spole1.rotation.x= Math.PI/6*(-1);
+              			scene.add (spole1);
+              			j= j+1;
+            			};
+        		};
+
+			var j = 1,i = 0;
+        		while(i!=6){
+          			var spole2 = new THREE.Mesh(pole,gray);
+				spole2.castShadow = true;
+				spole2.receiveShadow = true; 
+          			spole2.position.set(5.5,i,5.5);
+          			spole2.rotation.x= Math.PI/6;
+          			scene.add (spole2);
+          			i= i+1;
+            		while (j!=6){
+              			var spole3 = new THREE.Mesh(pole,gray);
+				spole3.castShadow = true; 
+				spole3.receiveShadow = true;
+              			spole3.position.set(5.5,j,5.5);
+              			spole3.rotation.x= Math.PI/6*(-1);
+              			scene.add (spole3);
+              			j= j+1;
+            			};
+        		};
+
+			var j = 1,i = 0;
+        		while(i!=6){
+          			var spole4 = new THREE.Mesh(pole,gray);
+				spole4.castShadow = true; 
+				spole4.receiveShadow = true
+          			spole4.position.set(-5.5,i,5.5);
+          			spole4.rotation.x= Math.PI/6;
+          			scene.add (spole4);
+          			i= i+1;
+            		while (j!=6){
+              			var spole5 = new THREE.Mesh(pole,gray);
+				spole5.receiveShadow = true;
+				spole5.castShadow = true; 
+              			spole5.position.set(-5.5,j,5.5);
+              			spole5.rotation.x= Math.PI/6*(-1);
+              			scene.add (spole5);
+              			j= j+1;
+            			};
+        		};
+
+
+			var j = 1,i = 0;
+        		while(i!=6){
+          			var spole6 = new THREE.Mesh(pole,gray);
+				spole6.castShadow = true; 
+				spole6.receiveShadow = true;
+          			spole6.position.set(5.5,i,-5.5);
+          			spole6.rotation.x= Math.PI/6;
+          			scene.add (spole6);
+          			i= i+1;
+            		while (j!=6){
+              			var spole7 = new THREE.Mesh(pole,gray);
+				spole7.receiveShadow = true;
+				spole7.castShadow = true;  
+              			spole7.position.set(5.5,j,-5.5);
+              			spole7.rotation.x= Math.PI/6*(-1);
+              			scene.add (spole7);
+              			j= j+1;
+            			};
+        		};
+
+			//CSG MOVES
+			stage3.position.x= 5;
+
+			division.position.x = 10;
+			division1.position.x = -10;
+			division2.position.z = 10;
+			division3.position.z = -10;
+			division.rotation.y = Math.PI*3/2;
+			division1.rotation.y = Math.PI/2;
+			division2.rotation.y = Math.PI;
+
+			steps.position.y = 0.25;
+			steps1.position.y = 0.25;
+			steps2.position.y = 0.375;
+			steps3.position.y = 0.375;
+			steps4.position.y = 0.5;
+			steps5.position.y = 0.5;
+			steps6.position.y = 0.625;
+			steps7.position.y = 0.625;
+			steps8.position.y = 0.75;
+			steps9.position.y = 0.75;
+			
+			//TO CSG
+			var stageCSG = THREE.CSG.fromMesh( stage1 );
+			var stage1CSG = THREE.CSG.fromMesh( stage2 );			
+			var stage2CSG = THREE.CSG.fromMesh( stage3 );
+
+			var fenceCSG = THREE.CSG.fromMesh(fence);
+			var fence1CSG = THREE.CSG.fromMesh(fence1);
+
+			var stepsCSG = THREE.CSG.fromMesh(steps);
+			var steps1CSG = THREE.CSG.fromMesh(steps1);
+			var steps2CSG = THREE.CSG.fromMesh(steps2);
+			var steps3CSG = THREE.CSG.fromMesh(steps3);
+			var steps4CSG = THREE.CSG.fromMesh(steps4);
+			var steps5CSG = THREE.CSG.fromMesh(steps5);
+			var steps6CSG = THREE.CSG.fromMesh(steps6);
+			var steps7CSG = THREE.CSG.fromMesh(steps7);
+			var steps8CSG = THREE.CSG.fromMesh(steps8);
+			var steps9CSG = THREE.CSG.fromMesh(steps9);
+
+			var divisionCSG = THREE.CSG.fromMesh(division);
+			var division1CSG = THREE.CSG.fromMesh(division1);
+			var division2CSG = THREE.CSG.fromMesh(division2);
+			var division3CSG = THREE.CSG.fromMesh(division3);
+
+			var carpetCSG = THREE.CSG.fromMesh(carpet);
+			var carpet1CSG = THREE.CSG.fromMesh(carpet1);
+			var carpet2CSG = THREE.CSG.fromMesh(carpet2);
+			var carpet3CSG = THREE.CSG.fromMesh(carpet3);
+			
+			//OPERATIONS
+			var stagetop = stageCSG.subtract(stage1CSG).subtract(stage2CSG);
+			var rail = fenceCSG.subtract(fence1CSG);
+			var hall = carpetCSG.subtract(carpet1CSG);
+			var hall1 = carpet2CSG.subtract(carpet3CSG);
+
+			var chairspot = steps1CSG.subtract(stepsCSG);
+			var chairspot1 = steps3CSG.subtract(steps2CSG);
+			var chairspot2 = steps5CSG.subtract(steps4CSG);
+			var chairspot3 = steps7CSG.subtract(steps6CSG);
+			var chairspot4 = steps9CSG.subtract(steps8CSG);
+
+			var spot = chairspot.union(chairspot1).union(chairspot2).union(chairspot3).union(chairspot4);
+			var div = spot.subtract(divisionCSG).subtract(division1CSG).subtract(division2CSG).subtract(division3CSG);
+			
+			//TO MESH
+			stage1 = THREE.CSG.toMesh(stagetop);
+			stage1.material = white;
+
+			fence = THREE.CSG.toMesh(rail);
+			fence.material = gray;
+
+			carpet = THREE.CSG.toMesh(hall);
+			carpet.material = wine;	
+			carpet3 = THREE.CSG.toMesh(hall1);
+			carpet3.material = orange;			
+			
+			steps = THREE.CSG.toMesh(div);
+			steps.material = black;
+
+			//GROUPING
+			var gstage = new THREE.Group();
+			gstage.add(stage);
+			gstage.add(stage1);
+			gstage.add(stage4);
+
+			var gpole = new THREE.Group();
+			gpole.add(lpole);
+			gpole.add(lpole1);
+			gpole.add(lpole2);
+			gpole.add(lpole3);
+			gpole.add(lpole4);
+			gpole.add(lpole5);
+			gpole.add(lpole6);
+			gpole.add(lpole7);
+			
+			var gchairspot = new THREE.Group();
+			gchairspot.add(steps);
+			
+			//MOVES
+			stage1.position.y = 0.1;
+			stage4.position.x = 8;
+			gstage.position.y = 0.25;
+			
+			fence.position.y = 0.25;
+
+			lpole.position.set(5.5,2.5,5.8);
+			lpole1.position.set(5.5,2.5,5.25);
+			lpole2.position.set(5.5,2.5,-5.8);
+			lpole3.position.set(5.5,2.5,-5.25);
+			lpole4.position.set(-5.5,2.5,5.8);
+			lpole5.position.set(-5.5,2.5,5.25);
+			lpole6.position.set(-5.5,2.5,-5.8);
+			lpole7.position.set(-5.5,2.5,-5.25);
+
+			lstand.position.y=5.5;
+			lstand1.position.y=5.5;
+			lstand.rotation.x=Math.PI/2;
+			lstand1.rotation.x=Math.PI/2;
+
+	
+			lamp.rotation.x=Math.PI/6;
+			lamp1.rotation.x=Math.PI*1/-6;
+			lamp2.rotation.z=Math.PI/6;
+			lamp3.rotation.z=Math.PI*1/-6;
+			lamp3.position.set(7.5,5.5,0);
+			lamp2.position.set(-7.5,5.5,0);
+			lamp.position.set(0,5.5,7.5);
+			lamp1.position.set(0,5.5,-7.5);
+
+
+			//SHADOWING
+			lstand.receiveShadow = true;
+			lstand1.receiveShadow = true;
+
+			lpole.receiveShadow = true;
+			lpole1.receiveShadow = true;
+			lpole2.receiveShadow = true;
+			lpole3.receiveShadow = true;
+			lpole4.receiveShadow = true;
+			lpole5.receiveShadow = true;
+			lpole6.receiveShadow = true;
+			lpole7.receiveShadow = true;
+
+			steps.receiveShadow = true;
+			steps1.receiveShadow = true;
+			steps2.receiveShadow = true;
+			steps3.receiveShadow = true;
+			steps4.receiveShadow = true;
+			steps5.receiveShadow = true;
+			steps6.receiveShadow = true;
+			steps7.receiveShadow = true;
+			steps8.receiveShadow = true;
+			steps9.receiveShadow = true;
+
+			carpet.receiveShadow = true;
+			carpet1.receiveShadow = true; 
+			carpet2.receiveShadow = true;
+			carpet3.receiveShadow = true; 
+
+			fence.receiveShadow = true;			
+			fence1.receiveShadow = true;
+
+			stage.receiveShadow = true;
+			stage1.receiveShadow = true;
+			stage2.receiveShadow = true;
+			stage3.receiveShadow = true;
+			stage4.receiveShadow = true;
+
+			floor.receiveShadow = true;
+
+			lstand.castShadow = true; 
+			lstand1.castShadow = true; 
+
+			lpole.castShadow = true; 
+			lpole1.castShadow = true; 
+			lpole2.castShadow = true; 
+			lpole3.castShadow = true; 
+			lpole4.castShadow = true; 
+			lpole5.castShadow = true; 
+			lpole6.castShadow = true; 
+			lpole7.castShadow = true; 
+
+			steps.castShadow = true; 
+			steps1.castShadow = true; 
+			steps2.castShadow = true; 
+			steps3.castShadow = true; 
+			steps4.castShadow = true; 
+			steps5.castShadow = true; 
+			steps6.castShadow = true; 
+			steps7.castShadow = true; 
+			steps8.castShadow = true; 
+			steps9.castShadow = true; 
+
+			carpet.castShadow = true; 
+			carpet1.castShadow = true;
+			carpet2.castShadow = true; 
+			carpet3.castShadow = true;  
+
+			fence.castShadow = true; 			
+			fence1.castShadow = true; 
+
+			stage.castShadow = true; 
+			stage1.castShadow = true; 
+			stage2.castShadow = true; 
+			stage3.castShadow = true; 
+			stage4.castShadow = true; 
+			
+			floor.castShadow = true; 
+			
+			//ADD
+			scene.add(gstage);
+			scene.add(floor);
+			scene.add(fence);
+			scene.add(carpet);
+			scene.add(carpet3);
+			scene.add(lstand);
+			scene.add(lstand1);
+			scene.add(gpole);
+			scene.add(gchairspot);
+			scene.add(lamp);
+			scene.add(lamp1);
+			scene.add(lamp2);
+			scene.add(lamp3);
+  			scene.add( car );
+
+			render();
+			}
+
+			function render(){
+  			var tx=0, ty=0, tz=0;
+			if(rightArrow) {
+			tx=0; ty=0; tz=-0.05;
+			}
+			if(leftArrow) {
+			tx=0; ty=0; tz=0.05;
+			}
+			if(downArrow){
+			tx=0.05; ty=0; tz=0;
+			}
+			if(upArrow){
+			tx=-0.05; ty=0; tz=0;
+        		}
+			
+			var t = new THREE.Matrix4();
+			t.set( 	1, 0, 0, tx,
+				0, 1, 0, ty, 
+				0, 0, 1, tz,
+				0, 0, 0, 1);
+
+  			car.applyMatrix(t);
+			controls.update();
+			renderer.render(scene,camera);
+			requestAnimationFrame( render );
+			}
+				
+    		</script>
+	</body>
+</html>

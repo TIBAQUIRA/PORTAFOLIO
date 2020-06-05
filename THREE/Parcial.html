@@ -1,0 +1,540 @@
+<html>
+	<head>
+		<title>PRIMER PARCIAL</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+	#info {
+                position: absolute;
+                padding: 10px;
+                width: 100%;
+                text-align: center;
+                color: #FFFFFF;
+		</style>
+		</head>
+	<body>
+	<div id="info">ROTACION DE CAMARA <br/>
+		A para rotar camara en  eje Y<br/>
+		S para rotar camara en  eje X<br/>
+		D para rotar camara en  eje Z <br/>
+		MOVIMIENTO CUBO<br/>
+	        Flechas<br/>
+    	</div>
+		<script src="js/three.js"></script>
+		<script>
+//SET UP SCENE & CAMERA
+var scene;
+var camera;
+var renderer;
+var aspect;
+var startTime = Date.now();	
+
+//SET UP SHAPES & MATERIAL
+var carro;
+
+//VARIABLES DE ROTACION
+var rx = 0;
+var ry = 0;
+var rz = 0;
+
+//TECLADO
+var aKey = false;
+var sKey = false;
+var dKey = false;
+var upArrow = false;
+var downArrow = false;
+var rightArrow = false;
+var leftArrow = false;
+
+init();
+animate();
+
+function init() {
+
+  scene = new THREE.Scene();
+  aspect = window.innerWidth / window.innerHeight;
+  camera = new THREE.PerspectiveCamera(45, aspect, 1, 1000);
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+ var onKeyDown = function ( event ) {
+		switch ( event.keyCode ) {
+			case 38: // TRASLADAR ADELANTE
+			upArrow = true;
+			break;
+			case 40: // TRASLADAR ATRÁS
+			downArrow = true;
+			break;
+			case 37: // ROTAR CW
+			leftArrow = true;
+			break;
+		        case 39: // ROTAR CCW
+			rightArrow = true;
+			break;
+			case 65: // CAMARA X
+			aKey = true;
+			break;
+			case 83: // CAMARA Y
+			sKey = true;
+			break;
+                   	case 68: // CAMARA Z
+			dKey = true;
+			break;
+			}
+};
+var onKeyUp = function ( event ) {
+		switch ( event.keyCode ) {
+			case 38: // TRASLADAR
+			upArrow = false;
+			break;
+			case 40: // TRASLADAR
+			downArrow = false;
+			break;
+			case 37: // ROTAR CW
+			leftArrow = false;
+			break;
+			case 39: // ROTAR CCW
+			rightArrow = false;
+			break;
+			case 65: // CAMARA X
+			aKey = false;
+			break;
+			case 83: // CAMARA Y
+			sKey = false;
+			break;
+                   	case 68: // CAMARA Z
+			dKey = false;
+			break;
+			}
+};	
+  	
+document.addEventListener( 'keydown', onKeyDown, false );
+document.addEventListener( 'keyup', onKeyUp, false );
+			
+
+
+  //BLOQUES CENTRALES
+  var geometry = new THREE.BoxGeometry(20,8,10);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube = new THREE.Mesh( geometry, material );
+  scene.add( cube );
+
+cube.position.y=4;
+cube.position.z=0;
+cube.position.x=0;
+
+  var geometry = new THREE.BoxGeometry(20,8,10);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube1 = new THREE.Mesh( geometry, material );
+  scene.add( cube1 );
+
+cube1.position.y=4;
+cube1.position.z=20;
+cube1.position.x=0;
+
+  var geometry = new THREE.BoxGeometry(20,8,10);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube2 = new THREE.Mesh( geometry, material );
+  scene.add( cube2 );
+
+cube2.position.y=4;
+cube2.position.z=-20;
+cube2.position.x=0;
+
+  //FACHADA CARRERA 11
+  var geometry = new THREE.BoxGeometry(5,10,35);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube3 = new THREE.Mesh( geometry, material );
+  scene.add( cube3 );
+
+cube3.position.y=5;
+cube3.position.z=0;
+cube3.position.x=12.5;
+
+  var geometry = new THREE.BoxGeometry(5,10,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube4 = new THREE.Mesh( geometry, material );
+  scene.add( cube4 );
+
+cube4.position.y=5;
+cube4.position.z=-22;
+cube4.position.x=12.5;
+
+  var geometry = new THREE.BoxGeometry(5,10,4);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube5 = new THREE.Mesh( geometry, material );
+  scene.add( cube5 );
+
+cube5.position.y=5;
+cube5.position.z=22;
+cube5.position.x=12.5;
+
+  //BIBLIOTECA CAFETERIA
+  var geometry = new THREE.BoxGeometry(15,3,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube6 = new THREE.Mesh( geometry, material );
+  scene.add( cube6 );
+
+cube6.position.y=1.5;
+cube6.position.z=10;
+cube6.position.x=0;
+
+  var geometry = new THREE.BoxGeometry(15,3,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube7 = new THREE.Mesh( geometry, material );
+  scene.add( cube7 );
+
+cube7.position.y=1.5;
+cube7.position.z=-10;
+cube7.position.x=0;
+
+  //BLOQUE ALTO
+  var geometry = new THREE.BoxGeometry(8,16,40);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube8 = new THREE.Mesh( geometry, material );
+  scene.add( cube8 );
+
+cube8.position.y=8;
+cube8.position.z=0;
+cube8.position.x=-14;
+
+  //BLOQUES LATERALES
+  var geometry = new THREE.BoxGeometry(6,14,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube9 = new THREE.Mesh( geometry, material );
+  scene.add( cube9 );
+
+cube9.position.y=7;
+cube9.position.z=-22;
+cube9.position.x=-12.99;
+
+  var geometry = new THREE.BoxGeometry(6,14,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube10 = new THREE.Mesh( geometry, material );
+  scene.add( cube10 );
+
+cube10.position.y=7;
+cube10.position.z=22;
+cube10.position.x=-12.99;
+
+  //BLOQUE PRINCIPAL
+  var geometry = new THREE.BoxGeometry(10,14,10);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube11 = new THREE.Mesh( geometry, material );
+  scene.add( cube11 );
+
+cube11.position.y=7;
+cube11.position.z=-40;
+cube11.position.x=10;
+
+  //PASILLO
+  var geometry = new THREE.BoxGeometry(2,4,10);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube12 = new THREE.Mesh( geometry, material );
+  scene.add( cube12 );
+
+cube12.position.y=2;
+cube12.position.z=-30;
+cube12.position.x=10;
+
+  //LABORATORIOS
+  var geometry = new THREE.BoxGeometry(6,10,12);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube13 = new THREE.Mesh( geometry, material );
+  scene.add( cube13 );
+
+cube13.position.y=5;
+cube13.position.z=-15;
+cube13.position.x=-60;
+
+  //SALAS DE ESTUDIO
+  var geometry = new THREE.BoxGeometry(3,3,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff  } );
+  var cube14 = new THREE.Mesh( geometry, material );
+  scene.add( cube14 );
+
+cube14.position.y=1.5;
+cube14.position.z=-10;
+cube14.position.x=-30;
+
+  var geometry = new THREE.BoxGeometry(3,3,6);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff  } );
+  var cube15 = new THREE.Mesh( geometry, material );
+  scene.add( cube15 );
+
+cube15.position.y=1.5;
+cube15.position.z=-5;
+cube15.position.x=-25;
+
+  //EDIFICIO DE POSGRADOS
+  var geometry = new THREE.BoxGeometry(12,12,12);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube16 = new THREE.Mesh( geometry, material );
+  scene.add( cube16 );
+
+cube16.position.y=6;
+cube16.position.z=17.5;
+cube16.position.x=-30;
+
+  //AULA MAXIMA
+  var geometry = new THREE.BoxGeometry(12,12,20);
+  var material = new THREE.MeshBasicMaterial( { color: 0xd233d9 } );
+  var cube17 = new THREE.Mesh( geometry, material );
+  scene.add( cube17 );
+
+cube17.position.y=6;
+cube17.position.z=15;
+cube17.position.x=45;
+
+  var geometry = new THREE.BoxGeometry(6,6,15);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube18 = new THREE.Mesh( geometry, material );
+  scene.add( cube18 );
+
+cube18.position.y=3;
+cube18.position.z=15;
+cube18.position.x=38;
+
+  //PISO
+  var geometry = new THREE.BoxGeometry(150,2,120);
+  var material = new THREE.MeshBasicMaterial( { color: 0x8980d7 } );
+  var cube19 = new THREE.Mesh( geometry, material );
+  scene.add( cube19 );
+
+cube19.position.y=0;
+cube19.position.z=0;
+cube19.position.x=0;
+
+  //ENTRADA
+  var geometry = new THREE.BoxGeometry(10,8,18);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube20 = new THREE.Mesh( geometry, material );
+  scene.add( cube20 );
+
+cube20.position.y=5;
+cube20.position.z=-10;
+cube20.position.x=70;
+
+  //MOMUMENTOS
+ var geometry = new THREE.ConeGeometry( 1, 8 );
+ var material = new THREE.MeshBasicMaterial( {color: 0x9b3cbe} );
+ var cone = new THREE.Mesh( geometry, material );
+ scene.add( cone );
+
+ cone.position.y=1.5;
+ cone.position.z=-10;
+ cone.position.x=40;
+
+ var geometry = new THREE.ConeGeometry( 3, 18 );
+ var material = new THREE.MeshBasicMaterial( {color: 0x9b3cbe} );
+ var cone = new THREE.Mesh( geometry, material );
+ scene.add( cone );
+
+ cone.position.y=1.5;
+ cone.position.z=35;
+ cone.position.x=40;
+
+  //REJA
+  var geometry = new THREE.BoxGeometry(150,3,1);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube21 = new THREE.Mesh( geometry, material );
+  scene.add( cube21 );
+
+cube21.position.y=1;
+cube21.position.z=60;
+cube21.position.x=0;
+
+  var geometry = new THREE.BoxGeometry(150,3,1);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube22 = new THREE.Mesh( geometry, material );
+  scene.add( cube22 );
+
+cube22.position.y=1;
+cube22.position.z=-60;
+cube22.position.x=0;
+
+  var geometry = new THREE.BoxGeometry(1,3,120);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube23 = new THREE.Mesh( geometry, material );
+  scene.add( cube23 );
+
+cube23.position.y=1;
+cube23.position.z=0;
+cube23.position.x=75;
+
+  var geometry = new THREE.BoxGeometry(1,3,120);
+  var material = new THREE.MeshBasicMaterial( { color: 0xcc33ff } );
+  var cube24 = new THREE.Mesh( geometry, material );
+  scene.add( cube24 );
+
+cube24.position.y=1;
+cube24.position.z=0;
+cube24.position.x=-75;
+
+  //CALLE
+  var geometry = new THREE.BoxGeometry(5,2.2,85);
+  var material = new THREE.MeshBasicMaterial( { color: 0x406278 } );
+  var cube23 = new THREE.Mesh( geometry, material );
+  scene.add( cube23 );
+
+cube23.position.y=0;
+cube23.position.z=-10;
+cube23.position.x=30;
+
+  var geometry = new THREE.BoxGeometry(85,2.2,5);
+  var material = new THREE.MeshBasicMaterial( { color: 0x406278 } );
+  var cube24 = new THREE.Mesh( geometry, material );
+  scene.add( cube24 );
+
+cube24.position.y=0;
+cube24.position.z=35;
+cube24.position.x=-10;
+
+  var geometry = new THREE.BoxGeometry(85,2.2,5);
+  var material = new THREE.MeshBasicMaterial( { color: 0x406278 } );
+  var cube25 = new THREE.Mesh( geometry, material );
+  scene.add( cube25 );
+
+cube25.position.y=0;
+cube25.position.z=-50;
+cube25.position.x=-10;
+
+  var geometry = new THREE.BoxGeometry(5,2.2,85);
+  var material = new THREE.MeshBasicMaterial( { color: 0x406278 } );
+  var cube26 = new THREE.Mesh( geometry, material );
+  scene.add( cube26 );
+
+cube26.position.y=0;
+cube26.position.z=-10;
+cube26.position.x=-50;
+
+  //CANCHAS
+  var geometry = new THREE.BoxGeometry(8,2.2,14);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube27 = new THREE.Mesh( geometry, material );
+  scene.add( cube27 );
+
+cube27.position.y=0;
+cube27.position.z=-30;
+cube27.position.x=60;
+
+  var geometry = new THREE.BoxGeometry(8,2.2,14);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube28 = new THREE.Mesh( geometry, material );
+  scene.add( cube28 );
+
+cube28.position.y=0;
+cube28.position.z=-30;
+cube28.position.x=50;
+
+  //PARQUEADERO
+  var geometry = new THREE.BoxGeometry(18,2.2,18);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  var cube29 = new THREE.Mesh( geometry, material );
+  scene.add( cube29 );
+
+cube29.position.y=0;
+cube29.position.z=-35;
+cube29.position.x=-35;
+
+  //CARROS
+    var geometry = new THREE.BoxGeometry(3,3,3);
+  var material = new THREE.MeshBasicMaterial( { color: 0x9b3cbe } );
+  carro = new THREE.Mesh( geometry, material );
+  carro.position.y=1;
+  carro.position.z=35;
+  carro.position.x=30;
+  scene.add( carro );
+
+  //GRID
+  var size = 100,
+    steps = 1;
+
+  geometry = new THREE.Geometry();
+  material = new THREE.LineBasicMaterial({
+    color: 'teal'
+  });
+
+  for (var i = -size; i <= size; i += steps) {
+    //draw lines one way
+    geometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+    geometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+
+    //draw lines the other way
+    geometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+    geometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+  }
+
+  //THREE.LinePieces prevents connecting of vertices
+  var line = new THREE.LineSegments(geometry, material, THREE.LinePieces);
+
+  scene.add(line);
+
+		camera.position.x = 100;
+		camera.position.y = 100;	 
+		camera.position.z =  100;
+                camera.lookAt(0,0,0);
+                renderer.render(scene, camera);
+}
+
+function animate() {
+  render();
+  requestAnimationFrame( animate );
+}
+
+
+
+function render() {
+  var dtime = Date.now()-startTime;
+  var speed = Date.now() * 0.00025;
+  console.log(camera.rotation);
+				
+
+		if(aKey) {
+			camera.position.x = Math.cos(speed)*  50;
+			camera.position.y = 50;
+			camera.position.z =  Math.sin(speed)* 50;
+		}
+		if(sKey) {
+			camera.position.x = 50;
+			camera.position.y = Math.cos(speed)*  50
+			camera.position.z = Math.sin(speed)* 50;
+		
+		}
+        	if(dKey) {
+			camera.position.x = Math.cos(speed)*  50;
+			camera.position.y = Math.sin(speed)* 50;
+			camera.position.z = -50;
+		}
+
+  var S=0;
+  var tx=0, ty=0, tz=0;
+	if(upArrow) {
+		tx=0; ty=0; tz=-0.35;
+	}
+	if(downArrow) {
+		tx=0; ty=0; tz=0.35;
+	}
+	if(rightArrow){
+		tx=0.35; ty=0; tz=0;
+	}
+	if(leftArrow){
+		tx=-0.35; ty=0; tz=0;
+        }
+
+var t = new THREE.Matrix4();
+	t.set( 	1, 0, 0, tx,
+		0, 1, 0, ty, 
+		0, 0, 1, tz,
+		0, 0, 0, 1);
+
+  carro.applyMatrix(t);
+  camera.lookAt(0,0,0); //0,0,0
+  renderer.render(scene, camera);
+}
+
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,104 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Sistema de coordenadas</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.min.js"></script>
+    <script>
+
+
+	//INICIALIZACION DE LA ESCENA 
+        var scene = new THREE.Scene();
+        var aspect = window.innerWidth / window.innerHeight;
+        var camera = new THREE.PerspectiveCamera( 80, aspect, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+    
+	//FLECHAS
+		//FLECHA X
+		var dir = new THREE.Vector3( 0, 0, 0 );
+		dir.normalize();
+		var origin = new THREE.Vector3( 0, 0, 0 );
+		var length = 1;
+		var hex = 0xFFFFFF;
+		var arrowHelper = new THREE.ArrowHelper( dir, origin, 6, hex );
+		scene.add( arrowHelper );  
+    
+		//FLECHA Y
+		var dir = new THREE.Vector3( 1, 0, 0 );
+		dir.normalize();
+		var origin = new THREE.Vector3( 0, 0, 0 );
+		var length = 1;
+		var hex = 0xFFFFFF;
+		var arrowHelper = new THREE.ArrowHelper( dir, origin, 6, hex );
+		scene.add( arrowHelper );  
+    
+		//FLECHA Z
+		var dir = new THREE.Vector3( -50, -50, 0 );
+		dir.normalize();
+		var origin = new THREE.Vector3( 0, 0, 0 );
+		var length = 1;
+		var hex = 0xFFFFFF;
+		var arrowHelper = new THREE.ArrowHelper( dir, origin, 4.5, hex );
+		scene.add( arrowHelper );
+
+	//PLANOS
+		//PLANO X    
+		var plane = new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 3 );
+		var helper = new THREE.PlaneHelper( plane, 1, 0xAA3333 );
+		scene.add( helper );
+   
+		//PLANO Y    
+		var plane = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), 3 );
+		var helper = new THREE.PlaneHelper( plane, 1, 0xffff00 );
+		scene.add( helper ); 
+    
+		//PLANO Z    
+		var plane = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 8 );
+		var helper = new THREE.PlaneHelper( plane, 1, 0xffff00 );
+		scene.add( helper );
+
+		//EJES
+		var axesHelper = new THREE.AxesHelper( 5 );
+		scene.add( axesHelper );
+
+		//CREA EL SEMICIRCULO
+		var circleGeometry= new THREE.Geometry();
+		var re = 180;
+		var re2 = 360;
+
+		for(var j=-180; j<re; j++){
+  		     for(var i=-360; i<re2; i++){
+         		var line = new THREE.Vector3();
+				line.x = 5 * Math.cos(Math.PI*j/re);	
+				line.z = 5 * Math.cos(Math.PI*i/re2)*Math.sin(Math.PI*j/re); 					
+		        line.y = 5 * Math.sin(Math.PI*i/re2)*Math.sin(Math.PI*j/re);
+				if( line.x >= 0){
+					break;
+				}
+         		circleGeometry.vertices.push(line); 				
+  		   }
+ 		}
+         
+		var material = new THREE.MeshBasicMaterial({color:0xFFFFFF, size: 0.1}); 
+		var circle = new THREE.Line(circleGeometry, material);
+		scene.add(circle);
+
+		//SE UBICA LA CAMARA
+		camera.position.x = 1;
+		camera.position.y = 1;
+		camera.position.z = 9;
+
+	//RENDERIZA
+	var render = function(){
+	renderer.render( scene, camera );}
+	render();
+  
+	</script>
+    </body>
+</html>

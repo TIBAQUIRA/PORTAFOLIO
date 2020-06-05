@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LIGHTS</title>
+		<style>
+      			html, body { margin: 0; padding: 0; overflow: hidden; }
+		</style>
+	</head>
+	<body>
+	    	<script src="js/three.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/csg.js"></script>
+		<script src="js/THREE.CSG.js"></script>
+    		<script>
+		var scene, aspect, camera, renderer, controls;
+		var ambientLight,light;
+		init();
+		animate();
+		function init(){
+			//INICIALIZACIÓN
+	        	scene = new THREE.Scene();
+            		scene.background = new THREE.Color(0x878787);
+	        	aspect = window.innerWidth / window.innerHeight;
+	        	camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000);
+
+	        	renderer = new THREE.WebGLRenderer({ antialias: true });
+	        	renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.shadowMap.enabled = true;
+			renderer.shadowMap.type = THREE.VSMShadowMap;
+
+	       	 	document.body.appendChild( renderer.domElement );
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+			//LIGHT
+			ambientLight = new THREE.AmbientLight(0xffffff,1);
+			scene.add(ambientLight);	
+			
+			light = new THREE.PointLight(0x5fa74f,0.6,25,2);
+			light.position.set(0,3.5,0);
+			light.castShadow = true;
+			light.shadowDarkness = 5;
+			scene.add(light);
+
+			light1 = new THREE.PointLight(0xffffff,0.4,15,2);
+			light1.position.set(0,3,0);
+			light1.castShadow = true;
+			light1.shadowDarkness =5;
+			scene.add(light1);			
+			
+			
+
+			//GRID AND GUIDES
+           		var size = 10;
+           		var arrowSize = 1;
+         		var divisions = size;
+            		var origin = new THREE.Vector3(0, 0, 0);
+            		var x = new THREE.Vector3(1, 0, 0);
+            		var y = new THREE.Vector3(0, 1, 0);
+            		var z = new THREE.Vector3(0, 0, 1);
+            		var color1 = new THREE.Color(0xFFFFFF);
+            		var color2 = new THREE.Color(0x333333);
+            		var colorR = new THREE.Color(0xAA3333);
+            		var colorG = new THREE.Color(0x33AA33);
+            		var colorB = new THREE.Color(0x333366);
+
+            		//GRID
+            		var axesHelper = new THREE.AxesHelper(size);
+            		var gridHelperXY = new THREE.GridHelper(size, divisions, color1, color1);
+            		var gridHelperXZ = new THREE.GridHelper(size, divisions, color1, color1);
+            		var gridHelperYZ = new THREE.GridHelper(size, divisions, color1, color1);
+
+            		//GRID ROTATION
+            		gridHelperXY.rotateOnWorldAxis(x, THREE.Math.degToRad(90));
+            		gridHelperXZ.rotateOnWorldAxis(y, THREE.Math.degToRad(90));
+            		gridHelperYZ.rotateOnWorldAxis(z, THREE.Math.degToRad(90));
+
+            		//COOR ARROWS
+            		var arrowX = new THREE.ArrowHelper(x, origin, arrowSize, colorR);
+            		var arrowY = new THREE.ArrowHelper(y, origin, arrowSize, colorG);
+            		var arrowZ = new THREE.ArrowHelper(z, origin, arrowSize, colorB);
+			
+			//MATERIALS
+			var gris = new THREE.MeshPhongMaterial({color:0xA5A5A5});
+			var gris1 = new THREE.MeshPhongMaterial({color:0x696969}); 
+			var gris2 = new THREE.MeshPhongMaterial({color:0x777777}); 
+			var gris3 = new THREE.MeshStandardMaterial({color:0xA9A9A9,metalness: 0.7 }); 
+			var negro = new THREE.MeshStandardMaterial({color:0x949494, metalness: 0.4 });
+			var blanco = new THREE.MeshStandardMaterial({color:0xd4d4d4});
+			var blanco1 = new THREE.MeshPhongMaterial({color:0xffffff});
+			var blanco2 = new THREE.MeshStandardMaterial({color:0xcccccc});
+			var amarillo = new THREE.MeshPhongMaterial({color:0xF9FEB2});
+			var rojo = new THREE.MeshStandardMaterial({color:colorR,opacity:0.2,transparency:true});
+			var azul = new THREE.MeshStandardMaterial({color:colorB,opacity:0.2,transparency:true});
+ 
+			//GEOMETRIES
+			var geocube = new THREE.BoxGeometry(12,0.5,12);
+			var geocube1 = new THREE.BoxGeometry(6,0.25,3);
+			var geocube2 = new THREE.BoxGeometry(1.5,0.15,1.5);
+			var geocube3 = new THREE.BoxGeometry(1.5,0.75,0.05);
+			var geocube4 = new THREE.BoxGeometry(12,0.5,8);
+			var geocube5 = new THREE.BoxGeometry(8,0.5,12);
+			var geocube6 = new THREE.BoxGeometry(0.5,0.5,11.99);
+			var geocube7 = new THREE.BoxGeometry(11.99,0.5,0.5);
+			var geocube8 = new THREE.BoxGeometry(6,0.25,0.5);
+			var geocube9 = new THREE.BoxGeometry(0.25,3.25,0.5);
+			var geocube10 = new THREE.BoxGeometry(5.8,2.8,0.5);
+
+			var geocube11 = new THREE.BoxGeometry(0.9,0.2,0.18);
+			var geocube12 = new THREE.BoxGeometry(0.2,0.2,0.45);
+			var geocube13 = new THREE.BoxGeometry(0.15,0.05,0.05);
+			var geocube14 = new THREE.BoxGeometry(0.05,0.05,0.15);
+			
+			var geosphere = new THREE.SphereGeometry(0.15,32,32);
+
+			var geocylinder = new THREE.CylinderGeometry(0.15,0.1,2.5,32);
+			var geocylinder2 = new THREE.CylinderGeometry(0.08,0.05,1.8,32);
+			var geocylinder3 = new THREE.CylinderGeometry(0.05,0.05,1.5,32);
+			var geocylinder4 = new THREE.CylinderGeometry(0.025,0.025,0.1,32);
+			var geocylinder5 = new THREE.CylinderGeometry(0.05,0.05,0.5,32);
+			var geocylinder6 = new THREE.CylinderGeometry(0.05,0.3,0.5,32);
+			
+			//FIGURES
+			var floor = new THREE.Mesh(geocube,blanco1);
+			var wall = new THREE.Mesh(geocube5,blanco);
+			var wall1 = new THREE.Mesh(geocube4,blanco);
+			var extwall =new THREE.Mesh(geocube6,blanco2);
+			var extwall1 =new THREE.Mesh(geocube7,blanco2);
+
+			var lamp = new THREE.Mesh(geocylinder5,gris);
+			var lamp1 = new THREE.Mesh(geocylinder6,gris);
+			var lamp2 = new THREE.Mesh(geosphere,amarillo);
+
+
+			var table = new THREE.Mesh(geocube1,gris);
+			var table1 = new THREE.Mesh(geocylinder,gris);
+			var table2 = new THREE.Mesh(geocylinder,gris);
+			var table3 = new THREE.Mesh(geocylinder,gris);
+			var table4 = new THREE.Mesh(geocylinder,gris);
+
+			var chair = new THREE.Mesh(geocube2,gris1);
+			var chair1 = new THREE.Mesh(geocylinder2,gris1);
+			var chair2 = new THREE.Mesh(geocylinder2,gris1);
+			var chair3 = new THREE.Mesh(geocylinder2,gris1);
+			var chair4 = new THREE.Mesh(geocylinder2,gris1);
+			var chair5 = new THREE.Mesh(geocylinder3,gris1);
+			var chair6 = new THREE.Mesh(geocylinder3,gris1);
+			var chair7 = new THREE.Mesh(geocube3,gris1);
+
+			var chair8 = new THREE.Mesh(geocube2,gris1);
+			var chair9 = new THREE.Mesh(geocylinder2,gris1);
+			var chair10 = new THREE.Mesh(geocylinder2,gris1);
+			var chair11 = new THREE.Mesh(geocylinder2,gris1);
+			var chair12 = new THREE.Mesh(geocylinder2,gris1);
+			var chair13 = new THREE.Mesh(geocylinder3,gris1);
+			var chair14 = new THREE.Mesh(geocylinder3,gris1);
+			var chair15 = new THREE.Mesh(geocube3,gris1);
+
+			var pill = new THREE.Mesh(geocylinder4,rojo);
+			var pill1 = new THREE.Mesh(geocylinder4,azul);
+
+			var gun = new THREE.Mesh(geocube11,gris3);
+			var gun1 = new THREE.Mesh(geocube12,gris3);
+			var gun2 = new THREE.Mesh(geocube13,gris3);
+			var gun3 = new THREE.Mesh(geocube14,gris3);
+
+			var glass = new THREE.Mesh(geocube8,gris2);
+			var glass1 = new THREE.Mesh(geocube8,gris2);
+			var glass2 = new THREE.Mesh(geocube9,gris2);
+			var glass3 = new THREE.Mesh(geocube9,gris2);
+			var glass4 = new THREE.Mesh(geocube10,negro);
+			
+			//MOVES
+			table.position.y = -2.5;
+			table.rotation.y = Math.PI/4;
+			table1.position.set(-1.05,-3.7,2.8);
+			table2.position.set(-2.85,-3.7,1.05);
+			table3.position.set(2.85,-3.7,-1.05);
+			table4.position.set(1.05,-3.7,-2.75);
+
+			chair.position.set(-2,-3.25,-2);
+			chair.rotation.y = Math.PI/4;
+			chair1.position.set(-2,-4.2,-1.1);
+			chair2.position.set(-1.1,-4.2,-2);
+			chair3.position.set(-2.9,-4.2,-2);
+			chair4.position.set(-2,-4.2,-2.9);
+			chair5.position.set(-2.8,-2.5,-2.1);
+			chair6.position.set(-2.1,-2.5,-2.8);
+			chair7.position.set(-2.4,-2.2,-2.4);
+			chair7.rotation.y = Math.PI/4;
+
+			chair8.position.set(-2,-3.25,-2);
+			chair8.rotation.y = Math.PI/4;
+			chair9.position.set(-2,-4.2,-1.1);
+			chair10.position.set(-1.1,-4.2,-2);
+			chair11.position.set(-2.9,-4.2,-2);
+			chair12.position.set(-2,-4.2,-2.9);
+			chair13.position.set(-2.8,-2.5,-2.1);
+			chair14.position.set(-2.1,-2.5,-2.8);
+			chair15.position.set(-2.4,-2.2,-2.4);
+			chair15.rotation.y = Math.PI/4;
+
+			pill.rotation.x = Math.PI/2;
+			pill.position.set(-0.7,-2.35,-0.5);
+			pill1.rotation.z = Math.PI/2;
+			pill1.position.set(-0.25,-2.35,-1);
+			
+			wall.rotation.z = Math.PI/2;
+			wall.position.set(-6,-1,0);
+			wall1.rotation.x = Math.PI/2;
+			wall1.position.set(0,-1,-6);
+
+			extwall.rotation.z = Math.PI/2;
+			extwall.position.set(-5.9,-4.5,0);
+			extwall1.rotation.x = Math.PI/2;
+			extwall1.position.set(0,-4.5,-5.9);
+
+			glass.position.set(0,-1,-5.85);
+			glass1.position.set(0,2,-5.85);
+			glass2.position.set(-3,0.5,-5.85);
+			glass3.position.set(3,0.5,-5.85);
+			glass4.position.set(0,0.5,-5.95);
+
+			lamp.position.set(0,4,0);
+			lamp1.position.set(0,3.8,0);
+			lamp2.position.set(0,3.55,0);
+
+			gun.position.set(0,-2.32,0);
+			gun1.position.set(0.3,-2.32,0.3);
+			gun1.rotation.y=Math.PI/16;
+			gun2.position.set(0.12,-2.32,0.2);
+			gun3.rotation.y=Math.PI/16;
+			gun3.position.set(0.05,-2.32,0.15);
+
+			floor.position.y = -5;
+			
+			//SHADOWING
+
+			floor.receiveShadow = true; 
+			wall.receiveShadow = true; 
+			wall1.receiveShadow = true; 
+			extwall.receiveShadow = true;
+			extwall1.receiveShadow = true;
+			extwall.castShadow = true;
+			extwall1.castShadow = true;  
+
+			lamp.receiveShadow = true; 
+			lamp1.receiveShadow = true; 
+			lamp2.receiveShadow = true;
+			lamp.castShadow = true; 
+			lamp1.castShadow = true; 
+			lamp2.castShadow = true;  
+
+			table.receiveShadow = true;
+			table1.receiveShadow = true; 
+			table2.receiveShadow = true;
+			table3.receiveShadow = true;
+			table4.receiveShadow = true;
+			table.castShadow = true;
+			table1.castShadow = true; 
+			table2.castShadow = true;
+			table3.castShadow = true;
+			table4.castShadow = true;  
+
+			chair.receiveShadow = true;
+			chair1.receiveShadow = true;
+			chair2.receiveShadow = true;
+			chair3.receiveShadow = true;
+			chair4.receiveShadow = true;
+			chair5.receiveShadow = true;
+			chair6.receiveShadow = true;
+			chair7.receiveShadow = true;
+			chair.castShadow = true;
+			chair1.castShadow = true;
+			chair2.castShadow = true;
+			chair3.castShadow = true;
+			chair4.castShadow = true;
+			chair5.castShadow = true;
+			chair6.castShadow = true;
+			chair7.castShadow = true;
+
+			chair8.receiveShadow = true;
+			chair9.receiveShadow = true;
+			chair10.receiveShadow = true;
+			chair11.receiveShadow = true;
+			chair12.receiveShadow = true;
+			chair13.receiveShadow = true;
+			chair14.receiveShadow = true;
+			chair15.receiveShadow = true;
+			chair8.castShadow = true;
+			chair9.castShadow = true;
+			chair10.castShadow = true;
+			chair11.castShadow = true;
+			chair12.castShadow = true;
+			chair13.castShadow = true;
+			chair14.castShadow = true;
+			chair15.castShadow = true;
+
+			pill.receiveShadow = true;
+			pill1.receiveShadow = true;
+			pill.castShadow = true;
+			pill1.castShadow = true;
+
+			gun.receiveShadow = true;
+			gun1.receiveShadow = true;
+			gun2.receiveShadow = true;
+			gun3.receiveShadow = true;
+			gun.castShadow = true;
+			gun1.castShadow = true;
+			gun2.castShadow = true;
+			gun3.castShadow = true;
+
+
+
+			glass.receiveShadow = true;
+			glass1.receiveShadow = true;
+			glass2.receiveShadow = true;
+			glass3.receiveShadow = true;
+			glass4.receiveShadow = true;
+			glass.castShadow = true;
+			glass1.castShadow = true;
+			glass2.castShadow = true;
+			glass3.castShadow = true;
+			glass4.castShadow = true;
+
+
+			//ADD
+			var gtable = new THREE.Group();
+			gtable.add(table);
+			gtable.add(table1);
+			gtable.add(table2);
+			gtable.add(table3);
+			gtable.add(table4);
+			scene.add( gtable );
+
+			
+			var gchair = new THREE.Group();
+			gchair.add(chair);
+			gchair.add(chair1);
+			gchair.add(chair2);
+			gchair.add(chair3);
+			gchair.add(chair4);
+			gchair.add(chair5);
+			gchair.add(chair6);
+			gchair.add(chair7);
+			scene.add( gchair );
+			
+			var gchair1 = new THREE.Group();
+			gchair1.add(chair8);
+			gchair1.add(chair9);
+			gchair1.add(chair10);
+			gchair1.add(chair11);
+			gchair1.add(chair12);
+			gchair1.add(chair13);
+			gchair1.add(chair14);
+			gchair1.add(chair15);
+			gchair1.translateZ(0.5);
+			gchair1.translateX(3.5);
+			gchair1.rotateY(Math.PI/2);
+			scene.add( gchair1 );
+
+			scene.add(pill);
+			scene.add(pill1);
+
+
+			var ggun= new THREE.Group();
+			ggun.add(gun);
+			ggun.add(gun1);
+			ggun.add(gun2);
+			ggun.add(gun3);
+			ggun.translateX(1.25);
+			ggun.translateZ(-2);
+			scene.add(ggun);
+
+			scene.add(floor);
+
+			scene.add(wall);
+			scene.add(wall1);
+
+			scene.add(extwall);
+			scene.add(extwall1);
+
+			var gglass = new THREE.Group();
+			gglass.add(glass);
+			gglass.add(glass1);
+			gglass.add(glass2);
+			gglass.add(glass3);
+			gglass.add(glass4);
+			scene.add( gglass );
+			
+
+			var glamp = new THREE.Group();
+			glamp.add(lamp);
+			glamp.add(lamp1);
+			glamp.add(lamp2);
+			scene.add( glamp );
+
+			//CAMERA SETTINGS
+			camera.position.x = 5;
+	    		camera.position.y = 5;
+            		camera.position.z = 5;
+			
+	    		camera.lookAt(0,0,0);
+
+
+		
+	    		//GRID ADD
+            		/*scene.add( gridHelperXY );
+            		scene.add( gridHelperXZ );
+            		scene.add( gridHelperYZ );
+            		scene.add( arrowX );
+            		scene.add( arrowY );
+            		scene.add( arrowZ );*/
+
+			animate();
+			}
+			function animate(){
+				requestAnimationFrame( animate );
+				controls.update();
+				renderer.render(scene,camera);
+			}
+
+    		</script>
+	</body>
+</html>
